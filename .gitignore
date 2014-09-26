@@ -30,3 +30,5 @@ local.properties
 
 gen/
 lint.xml
+/.nb-gradle/profiles/private/
+/.nb-gradle/private/

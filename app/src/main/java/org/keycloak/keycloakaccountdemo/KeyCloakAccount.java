@@ -75,11 +75,18 @@ public class KeyCloakAccount extends Activity {
         }
 
         @Override
-        public void onStart() {
-            super.onStart();
+        public void onResume() {
+            super.onResume();
             final AccountManager am = AccountManager.get(getActivity());
-            final Account account = am.getAccountsByType("org.keycloak.Account")[0];
-            fetchAccountInfo(account);
+            final Account[] accounts = am.getAccountsByType("org.keycloak.Account");
+
+            if (accounts.length == 0) {
+                am.addAccount("org.keycloak.Account", "org.keycloak.Account.token", null, null, getActivity(), null, null);
+            } else {
+
+                Account account = accounts[0];
+                fetchAccountInfo(account);
+            }
         }
 
         private void fetchAccountInfo(final Account account) {
@@ -94,15 +101,21 @@ public class KeyCloakAccount extends Activity {
                     try {
                         accountUrl = new URL("https://auth-coffeeregister.rhcloud.com/auth/realms/sup/account");
 
-                        String token = am.getAuthToken(account, "org.keycloak.Account.token", null, null, null, null).getResult().getString(AccountManager.KEY_AUTHTOKEN);
-                        HttpRestProvider provider = new HttpRestProvider(accountUrl);
-                        provider.setDefaultHeader("Authorization", "bearer " + token);
-                        HeaderAndBody accountData = provider.get();
-                        String accountBody = new String(accountData.getBody());
+                        Bundle result = am.getAuthToken(account, "org.keycloak.Account.token", null, null, null, null).getResult();
+                        if (result.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
+                            throw new RuntimeException("Herf derf");
+                        } else {
+                            String token = result.getString(AccountManager.KEY_AUTHTOKEN);
+                            HttpRestProvider provider = new HttpRestProvider(accountUrl);
+                            provider.setDefaultHeader("Authorization", "bearer " + token);
+                            HeaderAndBody accountData = provider.get();
+                            String accountBody = new String(accountData.getBody());
 
-                        return accountBody;
+                            return accountBody;
+                        }
 
                     } catch (Exception e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     }
 
