@@ -12,14 +12,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 import android.widget.Toast;
 
-import org.jboss.aerogear.android.http.HeaderAndBody;
-import org.jboss.aerogear.android.impl.http.HttpRestProvider;
-import org.json.JSONObject;
+import org.jboss.aerogear.android.pipe.http.HeaderAndBody;
+import org.jboss.aerogear.android.pipe.http.HttpRestProvider;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -99,7 +96,7 @@ public class KeyCloakAccount extends Activity {
 
                     URL accountUrl = null;
                     try {
-                        accountUrl = new URL("https://auth-coffeeregister.rhcloud.com/auth/realms/sup/account");
+                        accountUrl = new URL("http://10.0.2.2:8080/auth/realms/demo/account");
 
                         Bundle result = am.getAuthToken(account, "org.keycloak.Account.token", null, null, null, null).getResult();
                         if (result.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
