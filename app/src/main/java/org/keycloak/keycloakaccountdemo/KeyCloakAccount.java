@@ -96,7 +96,7 @@ public class KeyCloakAccount extends Activity {
 
                     URL accountUrl = null;
                     try {
-                        accountUrl = new URL("http://10.0.2.2:8080/auth/realms/demo/account");
+                        accountUrl = new URL("http://172.17.0.2:8080/auth/realms/authz_demo/account");
 
                         Bundle result = am.getAuthToken(account, "org.keycloak.Account.token", null, null, null, null).getResult();
                         if (result.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
